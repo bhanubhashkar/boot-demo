@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<body>
+<head>
+	<style>
+		#myChart {
+			min-height: 300px!important;
+		}
+	</style>
+</head>
+
+<div>
+  <canvas id="myChart"></canvas>
+</div>
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+
+
+
+<script>
+
+const beforeInit = {
+	id: "beforeInit",
+	beforeInit: (chart) => {
+        const dataset = chart.data.datasets[0];
+        chart.data.labels = [dataset.label];
+        dataset.data = [dataset.data[0], 100 - dataset.data[0]];
+		
+		const dataset1 = chart.data.datasets[1];
+        chart.data.labels = [dataset1.label];
+        dataset1.data = [dataset1.data[0], 100 - dataset1.data[0]];
+		
+		const dataset2 = chart.data.datasets[2];
+        chart.data.labels = [dataset2.label];
+        dataset2.data = [dataset2.data[0], 100 - dataset2.data[0]];
+    }
+}
+
+const beforeDraw = {
+	id: "beforeDraw",
+	beforeDraw: (chart) => {
+        var width = chart.chart.width, height = chart.chart.height, ctx = chart.chart.ctx;
+        ctx.restore();
+        var fontSize = (height / 300).toFixed(2);
+        ctx.font = fontSize + "em sans-serif";
+        
+        ctx.textBaseline = "middle";
+		
+        var text = chart.data.datasets[0].data[0] + "%",
+          textX = Math.round((width - ctx.measureText(text).width) / 2),
+          textY = (height / 2) - 20;
+		  
+		var text1 = chart.data.datasets[1].data[0] + "%",
+          text1X = Math.round((width - ctx.measureText(text1).width) / 2),
+          text1Y = (height / 2);	
+		  
+		var text2 = chart.data.datasets[2].data[0] + "%",
+          text2X = Math.round((width - ctx.measureText(text2).width) / 2),
+          text2Y = (height / 2) + 20;	
+		  
+		ctx.fillStyle = "red";
+        ctx.fillText(text, textX, textY);
+		
+		ctx.fillStyle = "green";
+		ctx.fillText(text1, text1X, text1Y);
+		
+		ctx.fillStyle = "blue";
+		ctx.fillText(text2, text2X, text2Y);
+        ctx.save();
+    }
+}
+	
+var config = {
+  type: 'doughnut',
+  data: {
+    datasets: [{
+      data: [70],
+      backgroundColor: ["red"],
+      label: 'Doughnut 1'
+    },{
+      data: [45],
+      backgroundColor: ["green"],
+      label: 'Doughnut 2'
+    },{
+	  data: [35],
+      backgroundColor: ["blue"],
+      label: 'Doughnut 3'
+    }],    
+  },
+  plugins: [beforeInit, beforeDraw],
+  options: {
+    maintainAspectRatio: false,
+    cutoutPercentage: 80,
+    rotation: Math.PI / 2,
+    legend: {
+      display: false,
+    },
+    tooltips: {
+      filter: tooltipItem => tooltipItem.index == 0
+    }
+  }
+};
+
+/*var myChartCircle = new Chart('chartProgress', {
+  type: 'doughnut',
+  data: {
+    datasets: [{
+      label: 'Africa / Population (millions)',
+      percent: 68,
+      backgroundColor: ['#5283ff']
+    }]
+  },
+  plugins: [{
+      beforeInit: (chart) => {
+        const dataset = chart.data.datasets[0];
+        chart.data.labels = [dataset.label];
+        dataset.data = [dataset.percent, 100 - dataset.percent];
+      }
+    },
+    {
+      beforeDraw: (chart) => {
+        var width = chart.chart.width,
+          height = chart.chart.height,
+          ctx = chart.chart.ctx;
+        ctx.restore();
+        var fontSize = (height / 150).toFixed(2);
+        ctx.font = fontSize + "em sans-serif";
+        ctx.fillStyle = "#9b9b9b";
+        ctx.textBaseline = "middle";
+        var text = chart.data.datasets[0].percent + "%",
+          textX = Math.round((width - ctx.measureText(text).width) / 2),
+          textY = height / 2;
+        ctx.fillText(text, textX, textY);
+        ctx.save();
+      }
+    }
+  ],
+  options: {
+    maintainAspectRatio: false,
+    cutoutPercentage: 85,
+    rotation: Math.PI / 2,
+    legend: {
+      display: false,
+    },
+    tooltips: {
+      filter: tooltipItem => tooltipItem.index == 0
+    }
+  }
+});*/
+
+
+window.onload = function() {
+  var ctx = document.getElementById("myChart")
+    .getContext("2d");
+  window.myDoughnut = new Chart(ctx, config);
+};
+</script>
+
+</body>
+</html>
